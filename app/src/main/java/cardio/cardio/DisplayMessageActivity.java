@@ -10,13 +10,16 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class DisplayMessageActivity extends AppCompatActivity {
     public static final String GET_GRAPHIC = "getDataType";
-    public ArrayList<Float> Data;
+    private ArrayList<Float> Data;
+    private static int port = 8080;
+    private static String host=Server.getInstance().getIpAddress();
     protected void onCreate(Bundle savedInstanceState) {//initialise the page
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_display_message);
@@ -28,7 +31,8 @@ public class DisplayMessageActivity extends AppCompatActivity {
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.textView);
         textView.setText(message);
-        new CallServer().execute("");//to call the server we need a thread
+        if(!(message ==null))
+            new CallServer().execute("");//to call the server we need a thread
     }
     public void getData(View view)//when pressing refresh, to have the lastest data into the server
     {
@@ -62,7 +66,9 @@ public class DisplayMessageActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {//watch CallServer in Login for more information
             try {
-                Socket client = new Socket("192.168.0.2", 8080);  //connect to server
+                InetAddress address = InetAddress.getByName(host);
+                Socket client = new Socket(address, port);
+               // Socket client = new Socket("************", 8080);  //connect to server
                 //DataOutputStream os = null;
                 //DataInputStream is = null;
                 //os = new DataOutputStream(client.getOutputStream());
